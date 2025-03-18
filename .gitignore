@@ -1,0 +1,25 @@
+# Environment variables
+.env
+
+# Generated files
+playlists/
+*.csv
+
+# Go specific
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# IDE specific
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS specific
+.DS_Store
+Thumbs.db 
