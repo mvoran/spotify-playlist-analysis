@@ -1,6 +1,6 @@
-# Spotify Playlist Analysis
+# Spotify Playlist Analysis Tool
 
-This Go program analyzes your Spotify playlists and identifies tracks from a specified year range that don't appear in your "Top Tracks" playlists.
+A Go application that analyzes your Spotify playlists to identify tracks from a specified year range that don't appear in your "Top Tracks" playlists.
 
 ## Motivation
 
@@ -8,30 +8,26 @@ Each year I build a "My Top Tracks of {Year}" Spotify playlist. However, Spotify
 
 ## Features
 
-- Fetches all your Spotify playlists
-- Identifies your "Top Tracks" playlists based on a configurable pattern
-- Processes all tracks in each playlist
-- Exports track information to a CSV file with the following columns:
-  - Playlist name
-  - Track name
-  - Artist(s)
-  - Album
-  - Release date
-  - Release year
-  - NotInTopTrackPlaylist (TRUE if the track is from the specified year range and not in any top tracks playlist)
+- Fetches all playlists from your Spotify account
+- Identifies tracks from your specified year range (default: 2020-2025)
+- Marks tracks that don't appear in your "Top Tracks" playlists
+- Supports analyzing playlists created by other users (optional)
+- Generates separate CSV files for your playlists and others' playlists
+- Handles pagination for large playlists
+- Normalizes smart quotes in playlist names
 
 ## Prerequisites
 
 - Go 1.16 or later
-- A Spotify account
-- A Spotify Developer account and application
+- A Spotify Developer account
+- A Spotify application with appropriate credentials
 
 ## Setup
 
-1. Create a Spotify Developer account at https://developer.spotify.com/
+1. Create a Spotify Developer account at https://developer.spotify.com/dashboard
 2. Create a new application in the Spotify Developer Dashboard
-3. Add `http://localhost:8081/callback` as a Redirect URI in your application settings
-4. Copy your Client ID and Client Secret
+3. Add `http://localhost:8081/callback` to your application's Redirect URIs
+4. Note down your application's Client ID and Client Secret
 
 ## Configuration
 
@@ -58,12 +54,16 @@ Replace:
 
 ## Installation
 
-1. Clone the repository
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/spotify-analysis.git
+   cd spotify-analysis
+   ```
+
 2. Install dependencies:
    ```bash
    go mod download
    ```
-3. Create and configure the `.env` file as described above
 
 ## Usage
 
@@ -71,11 +71,9 @@ Replace:
    ```bash
    go run main.go
    ```
-2. A browser window will open automatically for Spotify authentication
-3. After authentication, the program will:
-   - Fetch all your playlists
-   - Process tracks from each playlist
-   - Generate a CSV file in the `playlists` directory
+
+2. Open your browser and log in to Spotify when prompted
+3. The program will analyze your playlists and generate CSV files
 
 ## Output
 
@@ -94,4 +92,8 @@ Each CSV file includes:
 - Smart quotes in playlist names are automatically normalized
 - By default, the program only processes playlists created by the authenticated user
 - Set `SPOTIFY_INCLUDE_OTHER_PLAYLISTS=true` to analyze playlists created by other users
-- Tracks from other users' playlists are saved to a separate CSV file 
+- Tracks from other users' playlists are saved to a separate CSV file
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. 
