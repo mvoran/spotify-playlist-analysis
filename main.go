@@ -8,6 +8,7 @@ import (
 	"syscall"
 
 	"github.com/mikev/spotify-analysis/pkg/config"
+	"github.com/mikev/spotify-analysis/pkg/logger"
 	"github.com/mikev/spotify-analysis/pkg/output"
 	"github.com/mikev/spotify-analysis/pkg/processor"
 	"github.com/mikev/spotify-analysis/pkg/spotify"
@@ -18,6 +19,16 @@ func main() {
 	cfg, err := config.LoadConfig()
 	if err != nil {
 		log.Fatalf("Failed to load config: %v", err)
+	}
+
+	// Initialize logger
+	logCfg := &logger.Config{
+		LogFile:    cfg.LogFile,
+		RotateSize: cfg.LogRotateSize,
+		KeepFiles:  cfg.LogKeepFiles,
+	}
+	if err := logger.InitLogger(logCfg); err != nil {
+		log.Fatalf("Failed to initialize logger: %v", err)
 	}
 
 	// Initialize Spotify client

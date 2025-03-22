@@ -21,6 +21,9 @@ type Config struct {
 	EndYear               string
 	IncludeOtherPlaylists bool
 	OverwriteFiles        bool
+	LogFile               string
+	LogRotateSize         string
+	LogKeepFiles          int
 }
 
 // LoadConfig loads and validates all configuration from environment variables
@@ -39,6 +42,9 @@ func LoadConfig() (*Config, error) {
 	endYear := os.Getenv("SPOTIFY_END_YEAR")
 	includeOtherPlaylists := os.Getenv("SPOTIFY_INCLUDE_OTHER_PLAYLISTS")
 	overwriteFiles := os.Getenv("SPOTIFY_OVERWRITE_FILES")
+	logFile := os.Getenv("SPOTIFY_LOG_FILE")
+	logRotateSize := os.Getenv("SPOTIFY_LOG_ROTATE_SIZE")
+	logKeepFiles := os.Getenv("SPOTIFY_LOG_KEEP_FILES")
 
 	// Log configuration values (excluding sensitive data)
 	log.Printf("Configuration loaded:")
@@ -49,6 +55,9 @@ func LoadConfig() (*Config, error) {
 	log.Printf("  End Year: %s", endYear)
 	log.Printf("  Include Other Playlists: %s", includeOtherPlaylists)
 	log.Printf("  Overwrite Files: %s", overwriteFiles)
+	log.Printf("  Log File: %s", logFile)
+	log.Printf("  Log Rotate Size: %s", logRotateSize)
+	log.Printf("  Log Keep Files: %s", logKeepFiles)
 
 	// Validate required variables
 	if clientID == "" || clientSecret == "" || redirectURI == "" || port == "" ||
@@ -76,6 +85,26 @@ func LoadConfig() (*Config, error) {
 		log.Printf("SPOTIFY_OVERWRITE_FILES not set or invalid (%s), defaulting to true", overwriteFiles)
 	}
 
+	// Set default logging values if not specified
+	if logFile == "" {
+		logFile = "logs/spotify-analysis.log"
+		log.Println("Using default log file path")
+	}
+	if logRotateSize == "" {
+		logRotateSize = "10MB"
+		log.Println("Using default log rotate size")
+	}
+	if logKeepFiles == "" {
+		logKeepFiles = "7"
+		log.Println("Using default log keep files count")
+	}
+
+	// Convert log keep files to integer
+	keepFiles, err := strconv.Atoi(logKeepFiles)
+	if err != nil {
+		return nil, fmt.Errorf("invalid log keep files value: %v", err)
+	}
+
 	return &Config{
 		ClientID:              clientID,
 		ClientSecret:          clientSecret,
@@ -86,5 +115,8 @@ func LoadConfig() (*Config, error) {
 		EndYear:               endYear,
 		IncludeOtherPlaylists: includeOtherPlaylists == "true",
 		OverwriteFiles:        overwriteFilesBool,
+		LogFile:               logFile,
+		LogRotateSize:         logRotateSize,
+		LogKeepFiles:          keepFiles,
 	}, nil
 }
