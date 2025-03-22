@@ -15,6 +15,7 @@ Each year I build a "My Top Tracks of {Year}" Spotify playlist. However, Spotify
 - Generates separate CSV files for your playlists and others' playlists
 - Handles pagination for large playlists
 - Normalizes smart quotes in playlist names
+- Comprehensive logging with file rotation
 
 ## Prerequisites
 
@@ -34,14 +35,23 @@ Each year I build a "My Top Tracks of {Year}" Spotify playlist. However, Spotify
 Create a `.env` file in the project root with the following variables:
 
 ```env
+# Spotify API Credentials
 SPOTIFY_CLIENT_ID=your_client_id_here
 SPOTIFY_CLIENT_SECRET=your_client_secret_here
+
+# Application Configuration
 SPOTIFY_REDIRECT_URI=http://localhost:8081/callback
 SPOTIFY_PORT=8081
 SPOTIFY_TOP_TRACKS_PATTERN=your_pattern_here
 SPOTIFY_START_YEAR=2020
 SPOTIFY_END_YEAR=2025
 SPOTIFY_INCLUDE_OTHER_PLAYLISTS=false
+SPOTIFY_OVERWRITE_FILES=true
+
+# Logging Configuration
+SPOTIFY_LOG_FILE=logs/spotify-analysis.log
+SPOTIFY_LOG_ROTATE_SIZE=10MB
+SPOTIFY_LOG_KEEP_FILES=7
 ```
 
 Replace:
@@ -51,6 +61,24 @@ Replace:
 - `2020` with the first year of your top tracks range
 - `2025` with the last year of your top tracks range
 - `false` with `true` if you want to analyze playlists not created by you
+- `true` with `false` if you don't want to overwrite existing CSV files
+- `logs/spotify-analysis.log` with your preferred log file path
+- `10MB` with your preferred log file size limit
+- `7` with the number of old log files to keep
+
+### Logging Configuration
+
+The application provides comprehensive logging with the following features:
+- Logs are written to both the terminal and a file
+- Log files are automatically rotated when they reach the size limit
+- Old log files are kept for historical reference
+- Each log entry includes timestamp, file name, and line number
+- Log files are stored in the `logs` directory by default
+
+Default logging values:
+- Log file: `logs/spotify-analysis.log`
+- Rotate size: `10MB`
+- Keep files: `7`
 
 ## Installation
 
@@ -86,6 +114,10 @@ Each CSV file includes:
 - All tracks from the respective playlists
 - Special marking for tracks from the specified year range that don't appear in your top tracks playlists
 
+Log files are stored in the `logs` directory:
+- Current log file: `spotify-analysis.log`
+- Rotated log files: `spotify-analysis-YYYY-MM-DD-HH-MM-SS.log`
+
 ## Notes
 
 - The program handles pagination for both playlists and tracks
@@ -93,6 +125,8 @@ Each CSV file includes:
 - By default, the program only processes playlists created by the authenticated user
 - Set `SPOTIFY_INCLUDE_OTHER_PLAYLISTS=true` to analyze playlists created by other users
 - Tracks from other users' playlists are saved to a separate CSV file
+- Log files are automatically rotated when they reach the size limit
+- Old log files are kept for historical reference
 
 ## License
 
